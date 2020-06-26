@@ -1,2 +1,1 @@
-# music-sentiment-analysis
-Audio &amp; lyrics analysis
+<b> AUDIO & LYRICS SENTIMENT ANALYSIS </b>
