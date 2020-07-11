@@ -9,8 +9,7 @@ def run ():
     import time
     
     start_time=time.time()
-    df = get_complete_data('165uXGnvfZuBUZLZnBiJsB') # El Estado Playlist
-    #df = get_complete_data('3WCDdRaZZRLOEUEm6kd8Jx')
+    df = get_complete_data('37i9dQZF1DXdLtD0qszB1w') 
     pd.set_option('display.max_columns', None)
 
     def coincidence(df):
@@ -22,11 +21,11 @@ def run ():
         return coincidence_per
 
     def data_cleaning(df):
-        nan_count = df['lyrics_sentiment_score'].isnull().sum()
+        #nan_count = df['lyrics_sentiment_score'].isnull().sum()
         df_clean = df.dropna()    
-        return [df_clean, nan_count]
+        return df_clean
 
-    def valence(df):
+    def valence(df_clean):
         lyrics_sentiment_count=0
         audio_sentiment_count=0
     
@@ -43,35 +42,35 @@ def run ():
             audio_valence_score_sum+=i[0]
             lyrics_sentiment_score_sum+=i[1]
         
-        avg_audio_positive= (audio_valence_score_sum/(len(df)-nan_count))*100
-        avg_lyrics_positive= (lyrics_sentiment_score_sum/(len(df)-nan_count))*100
-        audio_positive_per= (audio_sentiment_count/(len(df)-nan_count))*100
-        lyrics_positive_per= (lyrics_sentiment_count/(len(df)-nan_count))*100
+        avg_audio_positive= (audio_valence_score_sum/(len(df_clean)))*100
+        avg_lyrics_positive= (lyrics_sentiment_score_sum/(len(df_clean)))*100
+        audio_positive_per= (audio_sentiment_count/(len(df_clean)))*100
+        lyrics_positive_per= (lyrics_sentiment_count/(len(df_clean)))*100
 
-        return [avg_audio_positive, avg_lyrics_positive, audio_sentiment_count, lyrics_sentiment_count]
+        return [avg_audio_positive, avg_lyrics_positive, audio_positive_per, lyrics_positive_per]
 
     #DATA CLEANING FUNCTION
-    df_clean, nan_count = data_cleaning(df)
+    df_clean = data_cleaning(df)
+    print (df_clean)
 
     #POSITIVENESS CALCULATOR FUNCTION
-    audio_pos_avg, lyrics_pos_avg, audio_pos_count, lyrics_pos_count = valence(df_clean)
+    audio_pos_avg, lyrics_pos_avg, audio_positive_per, lyrics_positive_per = valence(df_clean)
 
     #GRAPH BAR PLOT FROM PLOTS MODULE
-    get_bar_plot(df_clean)
+    get_bar_plot(df)
     plt.show()
 
     #GRAPH PIE CHART FROM PLOTS MODULE
-    get_pie_plot(audio_pos_count, lyrics_pos_count, len(df))
-    plt.show()
+    get_pie_plot(df_clean)
 
     #PRINT RESULTS
     print (df_clean.describe())
     print ("TOTAL TRACKS ----->", len(df)) 
-    print ("NaN COUNT ----->", nan_count)
-    print ("% OF COINCIDENCES -----> ", coincidence(df_clean))
-    print ("% POSITIVE TRACKS (AUDIO) -----> ", audio_pos_count/len(df_clean)*100)
+    print ("NaN COUNT ----->", len(df)-len(df_clean))
+    print ("% OF COINCIDENCES BETWEEN LYRICS AND AUDIO SENTIMENTS -----> ", coincidence(df_clean))
+    print ("% POSITIVE CLASSIFIED TRACKS (AUDIO) -----> ", audio_positive_per)
     print ("AVG VALENCE (AUDIO) ----->", audio_pos_avg)
-    print ("% POSITIVE TRACKS (LYRICS) -----> ", lyrics_pos_count/len(df_clean)*100)
+    print ("% POSITIVE CLASSIFIED TRACKS (LYRICS) -----> ", lyrics_positive_per)
     print ("AVG VALENCE (LYRICS) ----->", lyrics_pos_avg)
 
     print ("PROCESSING TIME ----->" , (time.time() - start_time))
