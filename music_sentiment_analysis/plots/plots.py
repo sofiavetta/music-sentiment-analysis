@@ -11,19 +11,8 @@ def get_bar_plot(df):
     ax.set_ylabel("Valence", fontsize=12)
     return ax
 
-def get_pie_plot(audio_pos_count, lyrics_pos_count, len_df):
-    audio_data = [audio_pos_count, len_df-audio_pos_count]
-    lyrics_data = [lyrics_pos_count, len_df-lyrics_pos_count]
-
-    audio_series = pd.Series(audio_data, index=("Positve", "Negative"))
-    lyrics_series = pd.Series(lyrics_data, index=("Positive", "Negative"))
-
-    audio_series.plot.pie(label="", title="AUDIO VALENCE")
+def get_pie_plot(df):
+    figure, axes = plt.subplots(1, 2)
+    df['audio_sentiment'].value_counts().plot(kind="pie",label="", title="AUDIO SENTIMENT", ax=axes[0])
+    df['lyrics_sentiment'].value_counts().plot(kind="pie",label="", title="LYRICS SENTIMENT", ax=axes[1])
     plt.show()
-    lyrics_series.plot.pie(label="", title="LYRICS VALENCE")
-    plt.show()
-    
-
-    #plot = df.plot(kind='pie', y='lyrics_sentiment', title = 'LYRICS VALENCE', figsize=(5, 5))
-    #return plot
-
